@@ -1,0 +1,40 @@
+name: Android package
+
+on:
+  push:
+    tags: ['android-pack-v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build package
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          ANDROID_PACK_VERSION="${TAG#android-pack-v}" npm run android:release
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" \
+              dist/android-agent-skills-*.zip \
+              dist/android-agent-skills-*.tar.gz \
+              --clobber
+          else
+            gh release create "$TAG" \
+              dist/android-agent-skills-*.zip \
+              dist/android-agent-skills-*.tar.gz \
+              --title "Android Agent Skills v${TAG#android-pack-v}" \
+              --notes-file dist/android-release-notes.md \
+              --target "$GITHUB_SHA"
+          fi

@@ -42,6 +42,8 @@
 
 Android प्रोजेक्ट में भी यही फाइलें काम करती हैं। उन्हें एजेंट की स्किल डायरेक्टरी में कॉपी करें; ऐप में कोई नई Android dependency नहीं जुड़ती।
 
+Android devs के लिए अलग [Android Agent Skills v1.0.0](https://github.com/ImSuri919/dev-agent-skills/releases/tag/android-pack-v1.0.0) pack भी है: सिर्फ पाँच Android स्किल्स और एक standalone installer। [ZIP](https://github.com/ImSuri919/dev-agent-skills/releases/download/android-pack-v1.0.0/android-agent-skills-1.0.0.zip) या [TAR.GZ](https://github.com/ImSuri919/dev-agent-skills/releases/download/android-pack-v1.0.0/android-agent-skills-1.0.0.tar.gz) डाउनलोड करें।
+
 ## इस्तेमाल
 
 फाइलों को एजेंट की स्किल डायरेक्टरी में कॉपी करें:

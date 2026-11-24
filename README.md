@@ -47,6 +47,8 @@ Agent instructions usually live in one chat and disappear. These files are reada
 
 Android projects work the same way: copy the skills you want into the agent's skills folder inside the repo, for example `.claude/skills/` for Claude Code. The instructions are Markdown; no Android dependency is added to your app.
 
+For a ready-to-download pack, use [Android Agent Skills v1.0.0](https://github.com/ImSuri919/dev-agent-skills/releases/tag/android-pack-v1.0.0). It contains only the five Android skills plus a standalone installer, as a [ZIP](https://github.com/ImSuri919/dev-agent-skills/releases/download/android-pack-v1.0.0/android-agent-skills-1.0.0.zip) or [TAR.GZ](https://github.com/ImSuri919/dev-agent-skills/releases/download/android-pack-v1.0.0/android-agent-skills-1.0.0.tar.gz).
+
 ## Install the files by hand
 
 Copy the skills you want into your agent's skills directory:
