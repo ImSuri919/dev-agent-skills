@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dev-agent-skills playground</title>
+  <style>
+    :root { color-scheme: dark; --bg: #0d1117; --panel: #161b22; --line: #30363d; --text: #e6edf3; --muted: #9198a1; --accent: #58a6ff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, Segoe UI, sans-serif; }
+    header { padding: 28px 20px 18px; border-bottom: 1px solid var(--line); }
+    h1 { margin: 0 0 6px; font-size: 26px; }
+    header p { margin: 0; color: var(--muted); max-width: 720px; }
+    a { color: var(--accent); }
+    main { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
+    .box { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; margin-bottom: 22px; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; }
+    input[type="search"], input[type="text"] { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 7px; background: #0d1117; color: var(--text); font: inherit; }
+    .hint { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    button.chip { background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+    button.chip.active, button.chip:hover { color: var(--text); border-color: var(--accent); }
+    .matches { margin-top: 14px; display: grid; gap: 8px; }
+    .match { display: flex; justify-content: space-between; gap: 12px; background: #0d1117; border: 1px solid var(--line); border-radius: 7px; padding: 10px 12px; cursor: pointer; text-align: left; color: var(--text); font: inherit; }
+    .match:hover { border-color: var(--accent); }
+    .match small { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; cursor: pointer; text-align: left; color: var(--text); font: inherit; }
+    .card:hover { border-color: var(--accent); }
+    .card h3 { margin: 0 0 8px; font-size: 16px; font-family: ui-monospace, monospace; }
+    .card p { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+    .tag { display: inline-block; border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; margin: 0 4px 4px 0; font-size: 11px; color: var(--muted); }
+    .cat { color: var(--accent); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+    .detail { position: fixed; inset: 0 0 0 auto; width: min(720px, 100%); background: var(--panel); border-left: 1px solid var(--line); padding: 24px; overflow: auto; transform: translateX(100%); transition: transform .18s ease; z-index: 10; }
+    .detail.open { transform: translateX(0); }
+    .detail h2 { font-family: ui-monospace, monospace; margin: 0 0 12px; }
+    .detail pre { white-space: pre-wrap; word-break: break-word; background: #0d1117; border: 1px solid var(--line); border-radius: 8px; padding: 16px; font: 12px/1.6 ui-monospace, SFMono-Regular, monospace; }
+    .close { float: right; background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+    .backdrop { position: fixed; inset: 0; background: #0009; opacity: 0; pointer-events: none; transition: opacity .18s ease; z-index: 9; }
+    .backdrop.open { opacity: 1; pointer-events: auto; }
+    footer { color: var(--muted); text-align: center; padding: 20px; border-top: 1px solid var(--line); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>dev-agent-skills playground</h1>
+    <p>Type a request and see which skill an agent would pick. Then open any skill to read its full instructions. Same router and same files that ship in the repo.</p>
+  </header>
+  <main>
+    <section class="box">
+      <label for="prompt">Try the router</label>
+      <input id="prompt" type="text" value="the site is slow" placeholder="review this PR, write a readme, check accessibility...">
+      <div id="matches" class="matches"></div>
+      <p class="hint">Scoring uses tags, trigger phrases and word overlap. It is deterministic and runs in your browser.</p>
+    </section>
+    <section class="box">
+      <label for="search">Browse all skills</label>
+      <input id="search" type="search" placeholder="Search name, tag or description">
+      <div id="chips" class="chips"></div>
+    </section>
+    <section id="grid" class="grid"></section>
+  </main>
+  <div id="backdrop" class="backdrop"></div>
+  <aside id="detail" class="detail" aria-label="Skill details"></aside>
+  <footer>Part of <a href="https://github.com/ImSuri919/dev-agent-skills">dev-agent-skills</a> | MIT</footer>
+  <script src="data.js"></script>
+  <script>
+    const data = window.DEVSKILLS_DATA || { skills: [] };
+    const skills = data.skills;
+    const STOP = new Set(["a","an","and","are","can","do","for","from","how","i","in","is","it","me","my","of","on","or","please","the","this","to","what","when","with","you","our","we","need","make","give","about","have"]);
+    const tokens = (text) => new Set(String(text).toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 2 && !STOP.has(w)));
+    function match(request, limit) {
+      const words = tokens(request);
+      const lower = String(request).toLowerCase();
+      return skills.map((skill) => {
+        const hay = tokens([skill.name, skill.description, ...(skill.tags || [])].join(" "));
+        let score = 0; const reasons = [];
+        words.forEach((word) => { if (hay.has(word)) { score += 2; reasons.push(word); } });
+        (skill.tags || []).forEach((tag) => { if (words.has(tag)) { score += 3; reasons.push(tag); } });
+        (skill.triggers || []).forEach((trigger) => { if (lower.includes(trigger.toLowerCase())) { score += 4; reasons.push(trigger); } });
+        return { skill, score, reasons: [...new Set(reasons)].slice(0, 5) };
+      }).filter((item) => item.score > 0).sort((a, b) => b.score - a.score).slice(0, limit || 3);
+    }
+    const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+    const grid = document.getElementById("grid");
+    const chips = document.getElementById("chips");
+    const search = document.getElementById("search");
+    const prompt = document.getElementById("prompt");
+    const matchesBox = document.getElementById("matches");
+    const detail = document.getElementById("detail");
+    const backdrop = document.getElementById("backdrop");
+    let activeCategory = "all";
+
+    function renderMatches() {
+      const items = match(prompt.value, 3);
+      matchesBox.innerHTML = items.length
+        ? items.map((item) => `<button class="match" data-name="${esc(item.skill.name)}"><span>${esc(item.skill.name)}<br><small>${esc(item.skill.description)}</small></span><small>score ${item.score} | ${esc(item.reasons.join(", "))}</small></button>`).join("")
+        : '<p class="hint">No skill matched. Try words like review, tests, slow, accessibility or release.</p>';
+      matchesBox.querySelectorAll("[data-name]").forEach((button) => {
+        button.addEventListener("click", () => openSkill(button.dataset.name));
+      });
+    }
+
+    function renderChips() {
+      const categories = ["all", ...new Set(skills.map((skill) => skill.category))];
+      chips.innerHTML = categories.map((category) => `<button class="chip ${category === activeCategory ? "active" : ""}" data-category="${esc(category)}">${esc(category)}</button>`).join("");
+      chips.querySelectorAll("[data-category]").forEach((button) => {
+        button.addEventListener("click", () => { activeCategory = button.dataset.category; renderChips(); renderGrid(); });
+      });
+    }
+
+    function renderGrid() {
+      const query = search.value.toLowerCase();
+      const visible = skills.filter((skill) => {
+        if (activeCategory !== "all" && skill.category !== activeCategory) return false;
+        if (!query) return true;
+        return [skill.name, skill.description, skill.category, ...(skill.tags || [])].join(" ").toLowerCase().includes(query);
+      });
+      grid.innerHTML = visible.map((skill) => `<button class="card" data-name="${esc(skill.name)}"><div class="cat">${esc(skill.category)}</div><h3>${esc(skill.name)}</h3><p>${esc(skill.description)}</p><div>${(skill.tags || []).map((tag) => `<span class="tag">${esc(tag)}</span>`).join("")}</div></button>`).join("");
+      grid.querySelectorAll("[data-name]").forEach((button) => {
+        button.addEventListener("click", () => openSkill(button.dataset.name));
+      });
+    }
+
+    function openSkill(name) {
+      const skill = skills.find((item) => item.name === name);
+      if (!skill) return;
+      detail.innerHTML = `<button class="close" id="close">Close</button><h2>${esc(skill.name)}</h2><p><span class="cat">${esc(skill.category)}</span></p><p>${esc(skill.description)}</p><p><a href="https://github.com/ImSuri919/dev-agent-skills/blob/main/skills/${encodeURIComponent(skill.name)}/SKILL.md" target="_blank" rel="noopener">Open on GitHub</a></p><pre>${esc(skill.text)}</pre>`;
+      detail.classList.add("open");
+      backdrop.classList.add("open");
+      document.getElementById("close").addEventListener("click", closeSkill);
+    }
+    function closeSkill() { detail.classList.remove("open"); backdrop.classList.remove("open"); }
+    backdrop.addEventListener("click", closeSkill);
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeSkill(); });
+    prompt.addEventListener("input", renderMatches);
+    search.addEventListener("input", renderGrid);
+    renderChips();
+    renderGrid();
+    renderMatches();
+  </script>
+</body>
+</html>
