@@ -77,6 +77,41 @@
       "tags": ["seo", "indexing", "canonical", "crawl", "traffic"],
       "triggers": ["SEO check", "not getting traffic", "technical SEO", "organic traffic"],
       "related": []
+    },
+    {
+      "name": "gradle-build-triage",
+      "category": "android",
+      "tags": ["gradle", "build", "android", "sync", "compile"],
+      "triggers": ["gradle build fails", "gradle sync failed", "android build error", "build task fails"],
+      "related": ["debug-triage"]
+    },
+    {
+      "name": "compose-ui-review",
+      "category": "android",
+      "tags": ["compose", "ui", "android", "recomposition", "jetpack"],
+      "triggers": ["review compose UI", "compose screen review", "compose component review", "check a compose screen"],
+      "related": ["a11y-focus-check"]
+    },
+    {
+      "name": "adb-debug",
+      "category": "android",
+      "tags": ["adb", "logcat", "device", "android", "crash"],
+      "triggers": ["adb debug", "adb logcat", "device crash", "debug on device"],
+      "related": ["debug-triage"]
+    },
+    {
+      "name": "play-store-release",
+      "category": "android",
+      "tags": ["play store", "release", "rollout", "aab", "android"],
+      "triggers": ["play store release", "staged rollout", "upload an AAB", "store listing update"],
+      "related": ["release-notes"]
+    },
+    {
+      "name": "android-permissions-check",
+      "category": "android",
+      "tags": ["android", "permissions", "permission", "manifest", "sdk"],
+      "triggers": ["android permissions", "check permissions", "merged manifest", "reduce permissions"],
+      "related": ["docs-writer"]
     }
   ]
 }

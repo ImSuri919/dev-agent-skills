@@ -84,6 +84,36 @@
       "prompt": "There is no focus ring when I use keyboard navigation.",
       "expect": "a11y-focus-check",
       "must_include": ["Problem", "Fix"]
+    },
+    {
+      "id": "gradle-01",
+      "prompt": "Gradle build fails on assembleDebug after a plugin bump.",
+      "expect": "gradle-build-triage",
+      "must_include": ["Failing task", "Ruled out"]
+    },
+    {
+      "id": "compose-01",
+      "prompt": "Review compose UI for the new feed screen.",
+      "expect": "compose-ui-review",
+      "must_include": ["Severity", "Checked clean"]
+    },
+    {
+      "id": "adb-01",
+      "prompt": "Use adb logcat to debug a device crash.",
+      "expect": "adb-debug",
+      "must_include": ["Device", "Log evidence"]
+    },
+    {
+      "id": "release-02",
+      "prompt": "Plan a play store release with a staged rollout.",
+      "expect": "play-store-release",
+      "must_include": ["Rollout", "Rollback"]
+    },
+    {
+      "id": "permissions-01",
+      "prompt": "Check android permissions in the merged manifest.",
+      "expect": "android-permissions-check",
+      "must_include": ["Permission", "Denial path"]
     }
   ]
 }

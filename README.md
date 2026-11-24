@@ -1,7 +1,7 @@
 # dev-agent-skills
 
 ![CI](https://github.com/ImSuri919/dev-agent-skills/actions/workflows/ci.yml/badge.svg)
-![skills](https://img.shields.io/badge/skills-11-brightgreen)
+![skills](https://img.shields.io/badge/skills-16-brightgreen)
 ![license](https://img.shields.io/badge/license-MIT-blue)
 
 A set of small, reusable instruction files for coding agents. Each file teaches one workflow: review a pull request, plan tests, triage a bug, write release notes.
@@ -15,7 +15,7 @@ An agent reads a `SKILL.md` when a request matches its description, then follows
 Most skill collections are a folder of Markdown files. This one also ships the machinery around them.
 
 1. **MCP server.** Agents can load a skill on demand instead of carrying all instructions in context. It exposes `list_skills`, `get_skill`, `match_skill`, and `get_manifest` over stdio. No packages to install.
-2. **Public eval scorecard.** Fourteen cases send a plain request through the same router the MCP server uses, then check that the winning skill contains the output sections it promises. Results are committed at [docs/eval-results.md](docs/eval-results.md).
+2. **Public eval scorecard.** Nineteen cases send a plain request through the same router the MCP server uses, then check that the winning skill contains the output sections it promises. Results are committed at [docs/eval-results.md](docs/eval-results.md).
 3. **One command installer.** Copy the skills into OpenCode, Claude Code, Codex, or Gemini paths. A SHA-256 lockfile makes the install reproducible and detects drift.
 4. **Skill graph.** `related` fields in the manifest generate a Mermaid graph, and CI fails if a hand-off cycle appears.
 5. **Browser playground.** Search, filter, route a prompt, and read any skill on a static page with no build step or backend.
@@ -39,6 +39,13 @@ Agent instructions usually live in one chat and disappear. These files are reada
 | [refactor-simplify](skills/refactor-simplify/SKILL.md) | Finds code that can be deleted or merged | A PR feels larger than it needs to be |
 | [skill-author](skills/skill-author/SKILL.md) | Writes a new skill that works on its own | Saving a repeated workflow |
 | [seo-basics](skills/seo-basics/SKILL.md) | Runs a first-pass technical SEO check on a site | A site needs more organic traffic |
+| [gradle-build-triage](skills/gradle-build-triage/SKILL.md) | Narrows a failing Android build to one task and one cause | Gradle build or sync fails |
+| [compose-ui-review](skills/compose-ui-review/SKILL.md) | Reviews Compose state, recomposition and accessibility | A Compose screen is in review |
+| [adb-debug](skills/adb-debug/SKILL.md) | Captures device evidence and debugs a crash with logcat | An app fails on a real device |
+| [play-store-release](skills/play-store-release/SKILL.md) | Plans a signed AAB rollout with metadata and rollback | Shipping to Play Store |
+| [android-permissions-check](skills/android-permissions-check/SKILL.md) | Audits the merged manifest against real feature use | Adding an SDK or cutting permissions |
+
+Android projects work the same way: copy the skills you want into the agent's skills folder inside the repo, for example `.claude/skills/` for Claude Code. The instructions are Markdown; no Android dependency is added to your app.
 
 ## Install the files by hand
 

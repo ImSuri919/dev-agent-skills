@@ -15,6 +15,11 @@ graph TD
   refactor-simplify["refactor-simplify<br/>quality"]
   skill-author["skill-author<br/>authoring"]
   seo-basics["seo-basics<br/>growth"]
+  gradle-build-triage["gradle-build-triage<br/>android"]
+  compose-ui-review["compose-ui-review<br/>android"]
+  adb-debug["adb-debug<br/>android"]
+  play-store-release["play-store-release<br/>android"]
+  android-permissions-check["android-permissions-check<br/>android"]
   code-review-brief --> refactor-simplify
   code-review-brief --> test-plan
   perf-triage --> debug-triage
@@ -22,6 +27,11 @@ graph TD
   release-notes --> debug-triage
   api-contract --> docs-writer
   skill-author --> docs-writer
+  gradle-build-triage --> debug-triage
+  compose-ui-review --> a11y-focus-check
+  adb-debug --> debug-triage
+  play-store-release --> release-notes
+  android-permissions-check --> docs-writer
 ```
 
 ## Cycles

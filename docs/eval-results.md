@@ -1,6 +1,6 @@
 # Skill routing and contract results
 
-14/14 cases passed | 11/11 skills covered
+19/19 cases passed | 16/16 skills covered
 
 Each case sends a prompt through the same router used by the MCP server, then checks that the winning skill contains the output phrases it promises.
 
@@ -20,5 +20,10 @@ Each case sends a prompt through the same router used by the MCP server, then ch
 | review-02 | Review a diff that adds tests. | code-review-brief | code-review-brief | pass |
 | docs-02 | Write a setup guide for contributors. | docs-writer | docs-writer | pass |
 | a11y-02 | There is no focus ring when I use keyboard navigation. | a11y-focus-check | a11y-focus-check | pass |
+| gradle-01 | Gradle build fails on assembleDebug after a plugin bump. | gradle-build-triage | gradle-build-triage | pass |
+| compose-01 | Review compose UI for the new feed screen. | compose-ui-review | compose-ui-review | pass |
+| adb-01 | Use adb logcat to debug a device crash. | adb-debug | adb-debug | pass |
+| release-02 | Plan a play store release with a staged rollout. | play-store-release | play-store-release | pass |
+| permissions-01 | Check android permissions in the merged manifest. | android-permissions-check | android-permissions-check | pass |
 
 This is a structural check. It does not run a language model and does not measure answer quality.
