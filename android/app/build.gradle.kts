@@ -14,6 +14,18 @@ android {
         versionName = "1.0"
     }
 
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file(
+                System.getenv("ANDROID_KEYSTORE")
+                    ?: "${System.getProperty("user.home")}/.android/debug.keystore"
+            )
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false

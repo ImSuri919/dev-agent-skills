@@ -31,11 +31,19 @@ jobs:
           test -n "$SDKMANAGER"
           yes | "$SDKMANAGER" --licenses >/dev/null 2>&1 || true
           "$SDKMANAGER" --sdk_root="$SDK" "platforms;android-35" "build-tools;35.0.0"
+          export ANDROID_KEYSTORE="$RUNNER_TEMP/dev-agent-skills-debug.keystore"
+          keytool -genkeypair -v \
+            -keystore "$ANDROID_KEYSTORE" \
+            -storepass android -keypass android \
+            -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US" >/dev/null
           curl -fsSL -o /tmp/gradle.zip https://services.gradle.org/distributions/gradle-8.7-bin.zip
           unzip -q /tmp/gradle.zip -d /tmp/gradle-dist
           /tmp/gradle-dist/gradle-8.7/bin/gradle :app:assembleRelease --no-daemon --stacktrace
           cp app/build/outputs/apk/release/app-release.apk \
             app/build/outputs/apk/release/dev-agent-skills-1.0.apk
+          unzip -l app/build/outputs/apk/release/dev-agent-skills-1.0.apk \
+            | grep -Eq 'META-INF/.*\.(RSA|SF)'
 
       - uses: actions/upload-artifact@v4
         with:
@@ -49,8 +57,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
         run: |
-          gh release create "$TAG" \
-            android/app/build/outputs/apk/release/dev-agent-skills-1.0.apk \
-            --title "Dev Agent Skills Android app v1.0" \
-            --notes "Installable Android app for the dev-agent-skills playground: 16 skills, MCP, evals and the Android pack. Built from commit ${GITHUB_SHA:0:7}." \
-            --target "$GITHUB_SHA"
+          APK="android/app/build/outputs/apk/release/dev-agent-skills-1.0.apk"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$APK" --clobber
+          else
+            gh release create "$TAG" "$APK" \
+              --title "Dev Agent Skills Android app v1.0" \
+              --notes "Installable Android app for the dev-agent-skills playground: 16 skills, MCP, evals and the Android pack. Built from commit ${GITHUB_SHA:0:7}." \
+              --target "$GITHUB_SHA"
+          fi
