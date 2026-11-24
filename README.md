@@ -1,26 +1,28 @@
 # dev-agent-skills
 
+![CI](https://github.com/ImSuri919/dev-agent-skills/actions/workflows/ci.yml/badge.svg)
+![skills](https://img.shields.io/badge/skills-11-brightgreen)
+![license](https://img.shields.io/badge/license-MIT-blue)
+
 A set of small, reusable instruction files for coding agents. Each file teaches one workflow: review a pull request, plan tests, triage a bug, write release notes.
 
-They are plain Markdown. An agent reads a `SKILL.md` when a request matches its description, then follows the steps inside. This works with OpenCode, Claude Code, Codex, and similar agents. There is no runtime and nothing to install.
+An agent reads a `SKILL.md` when a request matches its description, then follows the steps inside. This works with OpenCode, Claude Code, Codex, and similar agents.
 
-## Why
+[Hindi version](README.hi.md) | [Playground](https://imsuri919.github.io/dev-agent-skills/) | [Eval results](docs/eval-results.md) | [Skill graph](docs/skill-graph.md)
+
+## What makes this repo different
+
+Most skill collections are a folder of Markdown files. This one also ships the machinery around them.
+
+1. **MCP server.** Agents can load a skill on demand instead of carrying all instructions in context. It exposes `list_skills`, `get_skill`, `match_skill`, and `get_manifest` over stdio. No packages to install.
+2. **Public eval scorecard.** Fourteen cases send a plain request through the same router the MCP server uses, then check that the winning skill contains the output sections it promises. Results are committed at [docs/eval-results.md](docs/eval-results.md).
+3. **One command installer.** Copy the skills into OpenCode, Claude Code, Codex, or Gemini paths. A SHA-256 lockfile makes the install reproducible and detects drift.
+4. **Skill graph.** `related` fields in the manifest generate a Mermaid graph, and CI fails if a hand-off cycle appears.
+5. **Browser playground.** Search, filter, route a prompt, and read any skill on a static page with no build step or backend.
+
+## Why use this
 
 Agent instructions usually live in one chat and disappear. These files are readable, editable, and version controlled. Copy one into a project, change a step, and everyone on the team gets the same workflow.
-
-## Install
-
-Copy the skills you want into your agent's skills directory. Common locations:
-
-- OpenCode: `~/.config/opencode/skills/`
-- Claude Code: `.claude/skills/` inside your repo
-- Codex: your Codex skills directory
-
-```sh
-cp -R skills/code-review-brief ~/.config/opencode/skills/
-```
-
-Keep the directory name identical to the `name` field in `SKILL.md`. The checker enforces this.
 
 ## Included skills
 
@@ -38,26 +40,69 @@ Keep the directory name identical to the `name` field in `SKILL.md`. The checker
 | [skill-author](skills/skill-author/SKILL.md) | Writes a new skill that works on its own | Saving a repeated workflow |
 | [seo-basics](skills/seo-basics/SKILL.md) | Runs a first-pass technical SEO check on a site | A site needs more organic traffic |
 
-## Check and scaffold
+## Install the files by hand
+
+Copy the skills you want into your agent's skills directory:
+
+- OpenCode: `~/.config/opencode/skills/`
+- Claude Code: `.claude/skills/` inside your repo
+- Codex: `~/.codex/skills/`
+- Gemini CLI: `~/.gemini/skills/`
 
 ```sh
-npm run check
-npm test
-npm run new -- my-skill "Does one thing. Use when ..."
+cp -R skills/code-review-brief ~/.config/opencode/skills/
 ```
 
-`check` reads every file under `skills/`. It verifies the frontmatter, the directory name, the required sections, and that the README lists the skill. `new` copies the template into a fresh folder.
+Keep the directory name identical to the `name` field. The checker enforces this.
+
+## Install with the CLI
+
+```sh
+node scripts/install.mjs --agent opencode
+node scripts/install.mjs --agent claude --dir /path/to/project/.claude/skills
+node scripts/install.mjs --all --base /path/to/test-folder
+node scripts/install.mjs --agent opencode --check
+node scripts/install.mjs --agent opencode --frozen
+```
+
+`--check` reports missing or changed files. `--frozen` verifies `skills.lock.json` before writing anything.
+
+## Run the MCP server
+
+Add this to your agent's MCP config with an absolute path:
+
+```json
+{
+  "mcpServers": {
+    "dev-agent-skills": {
+      "command": "node",
+      "args": ["/absolute/path/to/dev-agent-skills/scripts/mcp-server.mjs"]
+    }
+  }
+}
+```
+
+Tools: `list_skills` filters by category, `get_skill` reads one skill, `match_skill` routes a request, `get_manifest` returns tags and triggers. Skills are also exposed as `skill://<name>` resources.
+
+## Check everything
+
+```sh
+npm run verify
+```
+
+That runs the skill check, unit tests, lockfile check, eval cases, graph cycle check, and site data build. Individual commands: `npm run check`, `npm test`, `npm run lock:check`, `npm run eval`, `npm run graph`, `npm run site:build`.
 
 Node 20 or newer. No packages to install.
 
-## Add your own
+## Add your own skill
 
 1. Run `npm run new -- <name> "<description>"`.
-2. Fill in each section. Write the steps so another agent can follow them without reading anything else.
-3. Add a row to the table above.
-4. Run `npm run check` and `npm test`.
+2. Fill in every section. Write steps another agent can follow without reading anything else.
+3. Add the skill to the table above and to `skills.manifest.json` with a category, tags, triggers, and hand-off links.
+4. Add an eval case in `evals/cases.json` with a prompt and the output phrases the skill promises.
+5. Run `npm run lock`, then `npm run verify`.
 
-Keep one skill per workflow. Put longer examples in `references/` inside the skill folder if you need them.
+The manifest drives the router, installer, graph, playground, and MCP server. A skill without a manifest entry fails CI.
 
 ## License
 

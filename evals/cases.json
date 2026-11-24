@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "review-01",
+      "prompt": "Please review this PR before we merge it.",
+      "expect": "code-review-brief",
+      "must_include": ["What changed", "Blockers"]
+    },
+    {
+      "id": "tests-01",
+      "prompt": "Add tests for the new coupon flow.",
+      "expect": "test-plan",
+      "must_include": ["case", "bug it catches"]
+    },
+    {
+      "id": "perf-01",
+      "prompt": "The site is slow on the report page.",
+      "expect": "perf-triage",
+      "must_include": ["Measurement", "Ruled out"]
+    },
+    {
+      "id": "a11y-01",
+      "prompt": "Check accessibility of the new dialog.",
+      "expect": "a11y-focus-check",
+      "must_include": ["How to reproduce", "Checked clean"]
+    },
+    {
+      "id": "release-01",
+      "prompt": "Write release notes for version 2.5.0.",
+      "expect": "release-notes",
+      "must_include": ["Upgrade notes", "Added"]
+    },
+    {
+      "id": "debug-01",
+      "prompt": "We have a production error spike since this morning.",
+      "expect": "debug-triage",
+      "must_include": ["Scope", "Hypotheses"]
+    },
+    {
+      "id": "api-01",
+      "prompt": "Design an endpoint for exporting orders.",
+      "expect": "api-contract",
+      "must_include": ["Errors", "Compatibility"]
+    },
+    {
+      "id": "docs-01",
+      "prompt": "Write a readme for this package.",
+      "expect": "docs-writer",
+      "must_include": ["Quick start", "Troubleshooting"]
+    },
+    {
+      "id": "refactor-01",
+      "prompt": "Simplify this PR and remove dead code.",
+      "expect": "refactor-simplify",
+      "must_include": ["Action", "lines removed"]
+    },
+    {
+      "id": "skill-01",
+      "prompt": "Write a skill for our deploy checklist.",
+      "expect": "skill-author",
+      "must_include": ["Use when", "Test request"]
+    },
+    {
+      "id": "seo-01",
+      "prompt": "Technical SEO check for our marketing site.",
+      "expect": "seo-basics",
+      "must_include": ["Evidence", "Open questions"]
+    },
+    {
+      "id": "review-02",
+      "prompt": "Review a diff that adds tests.",
+      "expect": "code-review-brief",
+      "must_include": ["Risk", "Tests"]
+    },
+    {
+      "id": "docs-02",
+      "prompt": "Write a setup guide for contributors.",
+      "expect": "docs-writer",
+      "must_include": ["Before you start", "Verify"]
+    },
+    {
+      "id": "a11y-02",
+      "prompt": "There is no focus ring when I use keyboard navigation.",
+      "expect": "a11y-focus-check",
+      "must_include": ["Problem", "Fix"]
+    }
+  ]
+}

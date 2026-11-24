@@ -1,0 +1,33 @@
+name: Skill proposal
+description: Suggest a new reusable skill for the playbook
+title: "skill: "
+labels: ["skill proposal"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Skill name
+      placeholder: api-contract
+    validations:
+      required: true
+  - type: textarea
+    id: trigger
+    attributes:
+      label: When should it trigger?
+      description: Write the words a person would say to ask for this.
+      placeholder: "review this PR, summarize changes"
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: What should the answer look like?
+      description: Name the sections or columns the output must contain.
+    validations:
+      required: true
+  - type: textarea
+    id: avoids
+    attributes:
+      label: What should it avoid?
+    validations:
+      required: false

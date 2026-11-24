@@ -1,9 +1,17 @@
 #!/usr/bin/env node
 
-import { readdir, readFile, mkdir, writeFile } from "node:fs/promises";
+import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import {
+  listSkillNames,
+  loadManifest,
+  parseFrontmatter,
+  sha256,
+  skillPath,
+  writeGenerated,
+} from "./lib/skills.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = path.resolve(HERE, "..");
@@ -18,17 +26,6 @@ const REQUIRED_HEADINGS = [
   "## Example",
 ];
 const NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-
-export function parseFrontmatter(text) {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n/.exec(text);
-  if (!match) return null;
-  const fields = {};
-  for (const line of match[1].split(/\r?\n/)) {
-    const field = /^([a-z][a-z0-9_-]*):\s*(.*)$/.exec(line);
-    if (field) fields[field[1]] = field[2].trim();
-  }
-  return fields;
-}
 
 export function validateSkill(dirName, text) {
   const errors = [];
@@ -57,25 +54,20 @@ export function validateSkill(dirName, text) {
 }
 
 export async function validateRepo(root = ROOT) {
-  const skillsDir = path.join(root, "skills");
   const errors = [];
-  let entries;
+  let skills;
   try {
-    entries = await readdir(skillsDir, { withFileTypes: true });
+    skills = await listSkillNames(root);
   } catch {
     return { errors: ["missing skills/ directory"], skills: [] };
   }
 
-  const readmePath = path.join(root, "README.md");
-  const readme = await readFile(readmePath, "utf8").catch(() => "");
+  const readme = await readFile(path.join(root, "README.md"), "utf8").catch(() => "");
   if (!readme) errors.push("missing README.md");
-
-  const skills = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
   if (skills.length === 0) errors.push("no skills found in skills/");
 
   for (const name of skills) {
-    const skillPath = path.join(skillsDir, name, "SKILL.md");
-    const text = await readFile(skillPath, "utf8").catch(() => null);
+    const text = await readFile(skillPath(root, name), "utf8").catch(() => null);
     if (text === null) {
       errors.push(`${name}: missing SKILL.md`);
       continue;
@@ -85,7 +77,53 @@ export async function validateRepo(root = ROOT) {
       errors.push(`${name}: not listed in README.md`);
     }
   }
+
+  const manifest = await loadManifest(root).catch(() => null);
+  if (!manifest) {
+    errors.push("missing or invalid skills.manifest.json");
+  } else {
+    const names = manifest.skills.map((skill) => skill.name).sort();
+    for (const name of skills) {
+      if (!names.includes(name)) errors.push(`${name}: missing from skills.manifest.json`);
+    }
+    for (const name of names) {
+      if (!skills.includes(name)) errors.push(`${name}: manifest entry has no skill directory`);
+    }
+    if (new Set(names).size !== names.length) errors.push("manifest contains duplicate skill names");
+    for (const skill of manifest.skills) {
+      if (!skill.category || !Array.isArray(skill.tags) || !Array.isArray(skill.triggers)) {
+        errors.push(`${skill.name}: manifest entry needs category, tags and triggers`);
+      }
+      for (const related of skill.related || []) {
+        if (!names.includes(related)) errors.push(`${skill.name}: unknown related skill '${related}'`);
+      }
+    }
+  }
+
   return { errors, skills };
+}
+
+export async function buildLock(root = ROOT) {
+  const skills = await listSkillNames(root);
+  const entries = {};
+  for (const name of skills) {
+    entries[name] = sha256(await readFile(skillPath(root, name), "utf8"));
+  }
+  return { version: 1, skills: entries };
+}
+
+export async function checkLock(root = ROOT) {
+  const expected = await buildLock(root);
+  const actual = JSON.parse(await readFile(path.join(root, "skills.lock.json"), "utf8").catch(() => "null"));
+  if (!actual || actual.version !== 1) return ["missing or invalid skills.lock.json"];
+  const errors = [];
+  for (const [name, digest] of Object.entries(expected.skills)) {
+    if (actual.skills?.[name] !== digest) errors.push(`${name}: digest does not match skills.lock.json`);
+  }
+  for (const name of Object.keys(actual.skills || {})) {
+    if (!(name in expected.skills)) errors.push(`${name}: stale entry in skills.lock.json`);
+  }
+  return errors;
 }
 
 async function createSkill(name, description) {
@@ -113,6 +151,8 @@ function usage() {
   console.log("Usage:");
   console.log("  node scripts/devskills.mjs check");
   console.log('  node scripts/devskills.mjs new <name> "Does one thing. Use when ..."');
+  console.log("  node scripts/devskills.mjs lock");
+  console.log("  node scripts/devskills.mjs lock:check");
 }
 
 async function main() {
@@ -133,6 +173,22 @@ async function main() {
     } catch (error) {
       console.error(`FAIL ${error.message}`);
       process.exitCode = 1;
+    }
+    return;
+  }
+  if (command === "lock") {
+    const lock = await buildLock();
+    const target = await writeGenerated(ROOT, "skills.lock.json", `${JSON.stringify(lock, null, 2)}\n`);
+    console.log(`Wrote ${path.relative(ROOT, target)} with ${Object.keys(lock.skills).length} digests`);
+    return;
+  }
+  if (command === "lock:check") {
+    const errors = await checkLock();
+    if (errors.length) {
+      for (const error of errors) console.error(`FAIL ${error}`);
+      process.exitCode = 1;
+    } else {
+      console.log("OK: skills.lock.json matches all skills");
     }
     return;
   }

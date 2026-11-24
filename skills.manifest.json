@@ -1,0 +1,82 @@
+{
+  "version": 2,
+  "skills": [
+    {
+      "name": "code-review-brief",
+      "category": "review",
+      "tags": ["review", "pr", "diff", "approval", "maintainer"],
+      "triggers": ["review this PR", "summarize changes", "what to look at before approving", "review a diff"],
+      "related": ["refactor-simplify", "test-plan"]
+    },
+    {
+      "name": "test-plan",
+      "category": "quality",
+      "tags": ["tests", "coverage", "unit", "e2e", "testing"],
+      "triggers": ["write tests", "add tests", "test plan", "which tests"],
+      "related": []
+    },
+    {
+      "name": "perf-triage",
+      "category": "performance",
+      "tags": ["slow", "latency", "profiler", "p95", "performance"],
+      "triggers": ["site is slow", "latency increased", "performance issue", "endpoint is slow"],
+      "related": ["debug-triage"]
+    },
+    {
+      "name": "a11y-focus-check",
+      "category": "accessibility",
+      "tags": ["accessibility", "keyboard", "focus", "wcag", "a11y"],
+      "triggers": ["check accessibility", "keyboard navigation", "focus ring", "audit a11y"],
+      "related": ["docs-writer"]
+    },
+    {
+      "name": "release-notes",
+      "category": "delivery",
+      "tags": ["release", "changelog", "version", "notes", "shipping"],
+      "triggers": ["write release notes", "prepare a release", "changelog entry", "bump version"],
+      "related": ["debug-triage"]
+    },
+    {
+      "name": "debug-triage",
+      "category": "debugging",
+      "tags": ["error", "incident", "logs", "root cause", "bug"],
+      "triggers": ["error spike", "bug report", "production error", "incident"],
+      "related": []
+    },
+    {
+      "name": "api-contract",
+      "category": "api",
+      "tags": ["api", "endpoint", "request", "response", "errors"],
+      "triggers": ["design an endpoint", "API contract", "change response shape", "new HTTP API"],
+      "related": ["docs-writer"]
+    },
+    {
+      "name": "docs-writer",
+      "category": "documentation",
+      "tags": ["readme", "guide", "documentation", "setup", "docs"],
+      "triggers": ["write a readme", "documentation", "setup guide", "write a guide"],
+      "related": []
+    },
+    {
+      "name": "refactor-simplify",
+      "category": "quality",
+      "tags": ["refactor", "delete", "simplify", "cleanup", "dead code"],
+      "triggers": ["simplify this PR", "remove dead code", "cleanup", "shrink the diff"],
+      "related": []
+    },
+    {
+      "name": "skill-author",
+      "category": "authoring",
+      "tags": ["skill", "agent", "instructions", "frontmatter", "workflow"],
+      "triggers": ["write a skill", "save this workflow", "agent skill", "new skill"],
+      "related": ["docs-writer"]
+    },
+    {
+      "name": "seo-basics",
+      "category": "growth",
+      "tags": ["seo", "indexing", "canonical", "crawl", "traffic"],
+      "triggers": ["SEO check", "not getting traffic", "technical SEO", "organic traffic"],
+      "related": []
+    }
+  ]
+}

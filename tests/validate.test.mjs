@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { validateSkill, validateRepo } from "../scripts/devskills.mjs";
+import { validateSkill, validateRepo, buildLock, checkLock } from "../scripts/devskills.mjs";
 
 function skillText(name, description = "Does one thing. Use when the task is that thing.") {
   return `---\nname: ${name}\ndescription: ${description}\n---\n\n# ${name}\n\n## Purpose\n\nProduces one result.\n\n## When to use\n\n- One case.\n\n## Steps\n\n1. Do the work.\n\n## Output format\n\nA short answer.\n\n## Avoid\n\n- Guessing.\n\n## Example\n\nAn answer.\n`;
@@ -14,6 +14,17 @@ async function makeRepo(t, skills, readme) {
   t.after(() => rm(dir, { recursive: true, force: true }));
   await mkdir(path.join(dir, "skills"), { recursive: true });
   await writeFile(path.join(dir, "README.md"), readme ?? "# Test\n", "utf8");
+  const manifest = {
+    version: 2,
+    skills: Object.keys(skills).map((name) => ({
+      name,
+      category: "test",
+      tags: ["test"],
+      triggers: ["test"],
+      related: [],
+    })),
+  };
+  await writeFile(path.join(dir, "skills.manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
   for (const [name, text] of Object.entries(skills)) {
     const skillDir = path.join(dir, "skills", name);
     await mkdir(skillDir, { recursive: true });
@@ -62,4 +73,15 @@ test("a valid repo passes the check", async (t) => {
   const result = await validateRepo(dir);
   assert.deepEqual(result.errors, []);
   assert.deepEqual(result.skills, ["test-plan"]);
+});
+
+test("the lockfile detects a changed skill", async (t) => {
+  const dir = await makeRepo(t, { "test-plan": skillText("test-plan") });
+  const lock = await buildLock(dir);
+  await writeFile(path.join(dir, "skills.lock.json"), `${JSON.stringify(lock)}\n`, "utf8");
+  assert.deepEqual(await checkLock(dir), []);
+
+  const skillFile = path.join(dir, "skills", "test-plan", "SKILL.md");
+  await writeFile(skillFile, `${skillText("test-plan")}\n`, "utf8");
+  assert.ok((await checkLock(dir)).some((error) => error.includes("does not match")));
 });

@@ -1,0 +1,117 @@
+{
+  "summary": "14/14 cases passed | 11/11 skills covered",
+  "results": [
+    {
+      "id": "review-01",
+      "prompt": "Please review this PR before we merge it.",
+      "expect": "code-review-brief",
+      "routed_to": "code-review-brief",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "tests-01",
+      "prompt": "Add tests for the new coupon flow.",
+      "expect": "test-plan",
+      "routed_to": "test-plan",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "perf-01",
+      "prompt": "The site is slow on the report page.",
+      "expect": "perf-triage",
+      "routed_to": "perf-triage",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "a11y-01",
+      "prompt": "Check accessibility of the new dialog.",
+      "expect": "a11y-focus-check",
+      "routed_to": "a11y-focus-check",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "release-01",
+      "prompt": "Write release notes for version 2.5.0.",
+      "expect": "release-notes",
+      "routed_to": "release-notes",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "debug-01",
+      "prompt": "We have a production error spike since this morning.",
+      "expect": "debug-triage",
+      "routed_to": "debug-triage",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "api-01",
+      "prompt": "Design an endpoint for exporting orders.",
+      "expect": "api-contract",
+      "routed_to": "api-contract",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "docs-01",
+      "prompt": "Write a readme for this package.",
+      "expect": "docs-writer",
+      "routed_to": "docs-writer",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "refactor-01",
+      "prompt": "Simplify this PR and remove dead code.",
+      "expect": "refactor-simplify",
+      "routed_to": "refactor-simplify",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "skill-01",
+      "prompt": "Write a skill for our deploy checklist.",
+      "expect": "skill-author",
+      "routed_to": "skill-author",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "seo-01",
+      "prompt": "Technical SEO check for our marketing site.",
+      "expect": "seo-basics",
+      "routed_to": "seo-basics",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "review-02",
+      "prompt": "Review a diff that adds tests.",
+      "expect": "code-review-brief",
+      "routed_to": "code-review-brief",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "docs-02",
+      "prompt": "Write a setup guide for contributors.",
+      "expect": "docs-writer",
+      "routed_to": "docs-writer",
+      "missing_contract": [],
+      "passed": true
+    },
+    {
+      "id": "a11y-02",
+      "prompt": "There is no focus ring when I use keyboard navigation.",
+      "expect": "a11y-focus-check",
+      "routed_to": "a11y-focus-check",
+      "missing_contract": [],
+      "passed": true
+    }
+  ]
+}

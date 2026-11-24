@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "skills": {
+    "a11y-focus-check": "df90718953d3216b0db697d46960bcd37189e2a651c4162ec04c08865f626b79",
+    "api-contract": "a4c0a2fe1be26fd6063962928b73b0c1a0a5d4335f10145872a6f0312c8413c1",
+    "code-review-brief": "26673ebe5ae857fecebdd37f3b00d001b1be1da67d19f0eeb5c3769fd7929d75",
+    "debug-triage": "6a6e431acef2694fec615cd65e659c1436c9c62a2654c27a98e33ae8a8c15aef",
+    "docs-writer": "dcef1c9ace138bbbd19888645b6f13e51204b984cba51664add3d135e280e1ce",
+    "perf-triage": "017986ddbdd94a839c05fe4dd9e1e1b72cebe3ac230f28cc38d05d84a949dacb",
+    "refactor-simplify": "95a3caf58bfe0d7859d968ee4d8571636c384475b5890628762c762aaa0a05d5",
+    "release-notes": "bec2dfec79378bce02c8e760e74c899f4e1f8edee3831938c668402b3aa9bf0a",
+    "seo-basics": "4d9eda6dc6e8711d909af6cc83a8a8aeb5aa42c4728e3c4d18af11f390ea5c62",
+    "skill-author": "b23f13c33dace256f5bada285a68a1f1db9c53655329944e85fb7a5e8fa194fc",
+    "test-plan": "9a2b7d574d62b4f2d740f895aeadfb9eeb13a937057cc3f92a3bec7290f80c94"
+  }
+}
