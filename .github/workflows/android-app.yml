@@ -19,14 +19,18 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - uses: android-actions/setup-android@v3
-
       - name: Build signed debug-key APK
         working-directory: android
         run: |
           SDK="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
-          test -n "$SDK"
+          SDK="${SDK:-/usr/local/lib/android/sdk}"
+          export ANDROID_HOME="$SDK"
+          export ANDROID_SDK_ROOT="$SDK"
           echo "sdk.dir=$SDK" > local.properties
+          SDKMANAGER="$(find "$SDK/cmdline-tools" -path '*/bin/sdkmanager' -type f | head -n 1)"
+          test -n "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null 2>&1 || true
+          "$SDKMANAGER" --sdk_root="$SDK" "platforms;android-35" "build-tools;35.0.0"
           curl -fsSL -o /tmp/gradle.zip https://services.gradle.org/distributions/gradle-8.7-bin.zip
           unzip -q /tmp/gradle.zip -d /tmp/gradle-dist
           /tmp/gradle-dist/gradle-8.7/bin/gradle :app:assembleRelease --no-daemon --stacktrace
