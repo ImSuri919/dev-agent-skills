@@ -2,8 +2,9 @@
 
 ![CI](https://github.com/ImSuri919/dev-agent-skills/actions/workflows/ci.yml/badge.svg)
 ![skills](https://img.shields.io/badge/skills-16-brightgreen)
+![Android app](https://img.shields.io/badge/Android%20app-v1.0-3DDC84?logo=android&logoColor=white)
 
-[English README](README.md) | [Playground](https://imsuri919.github.io/dev-agent-skills/) | [Eval परिणाम](docs/eval-results.md)
+[English README](README.md) | [Playground](https://imsuri919.github.io/dev-agent-skills/) | [Android app](docs/android-app.md) | [Eval परिणाम](docs/eval-results.md)
 
 कोडिंग एजेंट्स के लिए 16 छोटी, दोबारा इस्तेमाल होने वाली निर्देश फाइलें। हर फाइल एक काम सिखाती है: PR review करना, टेस्ट प्लान बनाना, बग की जांच करना, release notes लिखना।
 
@@ -43,6 +44,8 @@
 Android प्रोजेक्ट में भी यही फाइलें काम करती हैं। उन्हें एजेंट की स्किल डायरेक्टरी में कॉपी करें; ऐप में कोई नई Android dependency नहीं जुड़ती।
 
 Android devs के लिए अलग [Android Agent Skills v1.0.0](https://github.com/ImSuri919/dev-agent-skills/releases/tag/android-pack-v1.0.0) pack भी है: सिर्फ पाँच Android स्किल्स और एक standalone installer। [ZIP](https://github.com/ImSuri919/dev-agent-skills/releases/download/android-pack-v1.0.0/android-agent-skills-1.0.0.zip) या [TAR.GZ](https://github.com/ImSuri919/dev-agent-skills/releases/download/android-pack-v1.0.0/android-agent-skills-1.0.0.tar.gz) डाउनलोड करें।
+
+APK चाहिए तो [Dev Agent Skills APK](https://github.com/ImSuri919/dev-agent-skills/releases/download/android-app-v1.0.0/dev-agent-skills-1.0.apk) install करें। यही playground एक Android ऐप की तरह खोलेगा। Build विवरण [docs/android-app.md](docs/android-app.md) में है।
 
 ## इस्तेमाल
 

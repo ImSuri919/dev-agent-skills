@@ -3,12 +3,13 @@
 ![CI](https://github.com/ImSuri919/dev-agent-skills/actions/workflows/ci.yml/badge.svg)
 ![skills](https://img.shields.io/badge/skills-16-brightgreen)
 ![license](https://img.shields.io/badge/license-MIT-blue)
+![Android app](https://img.shields.io/badge/Android%20app-v1.0-3DDC84?logo=android&logoColor=white)
 
 A set of small, reusable instruction files for coding agents. Each file teaches one workflow: review a pull request, plan tests, triage a bug, write release notes.
 
 An agent reads a `SKILL.md` when a request matches its description, then follows the steps inside. This works with OpenCode, Claude Code, Codex, and similar agents.
 
-[Hindi version](README.hi.md) | [Playground](https://imsuri919.github.io/dev-agent-skills/) | [Eval results](docs/eval-results.md) | [Skill graph](docs/skill-graph.md)
+[Hindi version](README.hi.md) | [Playground](https://imsuri919.github.io/dev-agent-skills/) | [Android app](docs/android-app.md) | [Eval results](docs/eval-results.md) | [Skill graph](docs/skill-graph.md)
 
 ## What makes this repo different
 
@@ -48,6 +49,8 @@ Agent instructions usually live in one chat and disappear. These files are reada
 Android projects work the same way: copy the skills you want into the agent's skills folder inside the repo, for example `.claude/skills/` for Claude Code. The instructions are Markdown; no Android dependency is added to your app.
 
 For a ready-to-download pack, use [Android Agent Skills v1.0.0](https://github.com/ImSuri919/dev-agent-skills/releases/tag/android-pack-v1.0.0). It contains only the five Android skills plus a standalone installer, as a [ZIP](https://github.com/ImSuri919/dev-agent-skills/releases/download/android-pack-v1.0.0/android-agent-skills-1.0.0.zip) or [TAR.GZ](https://github.com/ImSuri919/dev-agent-skills/releases/download/android-pack-v1.0.0/android-agent-skills-1.0.0.tar.gz).
+
+Prefer an app? Install the [Dev Agent Skills APK](https://github.com/ImSuri919/dev-agent-skills/releases/download/android-app-v1.0.0/dev-agent-skills-1.0.apk). It opens the same playground in a focused Android shell. Build details are in [docs/android-app.md](docs/android-app.md).
 
 ## Install the files by hand
 

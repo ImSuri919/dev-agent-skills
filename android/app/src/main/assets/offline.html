@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Offline</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: #0b1020;
+      color: #e6edf7;
+      font-family: Roboto, Arial, sans-serif;
+    }
+    .card {
+      width: min(420px, 100%);
+      padding: 24px;
+      border: 1px solid #1d2c4d;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #121a2e, #0d1426);
+    }
+    .tag { color: #22d3ee; font-size: 11px; letter-spacing: 2px; }
+    h1 { margin: 10px 0 8px; font-size: 22px; }
+    p { color: #9aabc5; line-height: 1.6; }
+    a {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: #22d3ee;
+      color: #07111f;
+      font-weight: 700;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="tag">OFFLINE</div>
+    <h1>Playground unavailable</h1>
+    <p>The app could not reach the live playground. Check your connection, then try again. The skills and installer are also available as a ZIP release on GitHub.</p>
+    <a href="devagentskills://retry">Retry</a>
+  </div>
+</body>
+</html>
